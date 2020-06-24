@@ -9,6 +9,8 @@ dr = None
 
 def crawl():
     dr = webdriver.Chrome(ChromeDriverManager().install())
+
+    # TODO foreach category
     dr.get(BASE_URL+'/beer/ale/ipa/c15')
     soup = BeautifulSoup(dr.page_source, "html.parser")
 
