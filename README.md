@@ -3,8 +3,6 @@
 Beers' characteristics Web Crawler. Extracting from [Drizly](https://drizly.com/) website.
 
 ## Intro
-This project was developed only for education purposes.
-
 Its main goal is to retrieve the beers characteristics, given a certain beer style. It crawls all the beers in all pages until it reaches the end.
 
 <img src='./assets/beerchars.png'>
@@ -25,7 +23,7 @@ pip install -r requirements.txt
 
 ## Running the Crawler
 
-To run the crawler it's mandatory to pass the category's endpoint as an argument to the python script. An example is shown below:
+To run the crawler you must pass the category's endpoint as an argument to the python script. An example is shown below:
 
 ```python
 python .\drizly_crawler.py /beer/ale/ipa/c15
