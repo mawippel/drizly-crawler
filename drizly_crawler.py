@@ -1,34 +1,40 @@
 import requests
+import sys
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-BASE_URL = 'https://drizly.com/beer/ale/ipa/c15'
+BASE_HOST = 'https://drizly.com'
 dr = None
 
 
-def crawl():
+def crawl(beer_category_url):
     dr = webdriver.Chrome(ChromeDriverManager().install())
+    page_number = 1
 
-    page = 1
     while True:
         try:
-            fetch_beers(dr, '/page{}'.format(page))
-            page += 1
+            page_url = '{}{}/page{}'.format(BASE_HOST,
+                                            beer_category_url, page_number)
+            fetch_beers(dr, page_url)
+            page_number += 1
         except:
+            print('An error occured: {}'.format(sys.exc_info()[0]))
             break
 
 
-def fetch_beers(dr, page_sufix):
-    dr.get(BASE_URL + page_sufix)
+def fetch_beers(dr, page_url):
+    dr.get(page_url)
     soup = BeautifulSoup(dr.page_source, "html.parser")
 
     beers = soup.findAll(
         'li', {"class": 'CatalogGrid__CatalogListItem___3S6W5'})
     for beer in beers:
         anchor = beer.find('a')
-        print(BASE_URL + anchor['href'])
-        get_beer_characteristics(dr, BASE_URL + anchor['href'])
+        print(BASE_HOST + anchor['href'])
+        get_beer_characteristics(dr, BASE_HOST + anchor['href'])
+
 
 def get_beer_characteristics(dr, href):
     dr.get(href)
@@ -42,5 +48,13 @@ def get_beer_characteristics(dr, href):
         print(dt.text + ' : ' + dd.text)
 
 
+def read_sys_args():
+    if not sys.argv or len(sys.argv) < 2:
+        print('Please inform the seed path. To retrieve further information see the README.md file')
+        exit()
+    return sys.argv[1]
+
+
 if __name__ == "__main__":
-    crawl()
+    beer_category_url = read_sys_args()
+    crawl(beer_category_url)
